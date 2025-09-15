@@ -1,7 +1,7 @@
 import sys
 import random
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QSlider, QCheckBox
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSlider, QCheckBox, QPushButton
+from PyQt5.QtCore import Qt, QTimer
 
 class Finestra(QWidget):
     def __init__(self):
@@ -12,9 +12,22 @@ class Finestra(QWidget):
         # Layout verticale
         layout = QVBoxLayout()
 
-        # Etichetta per mostrare il valore dello slider
-        self.label = QLabel("Lunghezza: 10")
-        layout.addWidget(self.label)
+        # Etichetta per mostrare il valore dello slider + bottone
+        # Layout orizzontale per password e bottone copia
+        layout_riga = QHBoxLayout()
+        self.label = QLabel("Password:")
+        layout_riga.addWidget(self.label)
+
+        self.bottone_copia = QPushButton("Copia")
+        self.bottone_copia.setMinimumWidth(80)  
+        self.bottone_copia.setMaximumWidth(80) # puoi cambiare la larghezza
+        self.bottone_copia.clicked.connect(self.copia_password)
+        layout_riga.addWidget(self.bottone_copia)
+        layout.addLayout(layout_riga)
+
+        self.label1 = QLabel("Numero caratteri: 10")
+        layout.addWidget(self.label1)
+        
 
         # Slider (da 5 a 32)
         self.slider = QSlider(Qt.Horizontal)
@@ -26,7 +39,7 @@ class Finestra(QWidget):
 
         # Checkbox 1
         self.check_maiuscole = QCheckBox("Maiuscole (A-Z)")
-        self.check_maiuscole.setChecked(True)  # attiva di default
+        self.check_maiuscole.setChecked(False)  # attiva di default
         self.check_maiuscole.stateChanged.connect(self.aggiorna_testo)
         layout.addWidget(self.check_maiuscole)
 
@@ -82,8 +95,17 @@ class Finestra(QWidget):
                 num-=1
 
 
-        self.label.setText(psw)
+        self.label.setText(f"Password: {psw}")
+        self.label1.setText(f"Numero caratteri: {lunghezza}")
         
+    def copia_password(self):
+        clipboard = QApplication.clipboard()
+        clipboard.setText(self.label.text())
+        self.bottone_copia.setText("Copiato!")
+        #copiata malamente da internet perché non sapevo come fare per fargli aspettare un secondo (con arduino è molto più facile)
+        QTimer.singleShot(1000, lambda: self.bottone_copia.setText("Copia"))
+       
+
 
 # Avvio applicazione
 app = QApplication(sys.argv)
