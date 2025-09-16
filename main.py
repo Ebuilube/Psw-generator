@@ -29,9 +29,9 @@ class Finestra(QWidget):
         layout.addWidget(self.label1)
         
 
-        # Slider (da 5 a 32)
+        # Slider (da 7 a 32)
         self.slider = QSlider(Qt.Horizontal)
-        self.slider.setMinimum(5)
+        self.slider.setMinimum(7)
         self.slider.setMaximum(32)
         self.slider.setValue(10)  # valore iniziale
         self.slider.valueChanged.connect(self.aggiorna_testo)
@@ -94,13 +94,37 @@ class Finestra(QWidget):
                 psw = "".join(pswlist)
                 num-=1
 
-
+        apposto = self.verifica(psw)
+        if apposto == False:
+            self.aggiorna_testo()
+            return
+        
         self.label.setText(f"Password: {psw}")
         self.label1.setText(f"Numero caratteri: {lunghezza}")
-        
-    def copia_password(self):
+
+    def verifica(self, psw):
+        apposto = True
+        #if any(c.islower() for c in psw):
+
+            
+        if self.check_maiuscole.isChecked() == True:
+                if any(c.isupper() for c in psw)==False:
+                    return False
+            
+        if self.check_numeri.isChecked() == True:
+            if any(c.isdigit() for c in psw)==False:
+               return False
+            
+        if self.check_carspec.isChecked() == True:
+            if any(c in "!@#$%^&*()-_=+" for c in psw)==False:
+                return False    
+            
+        return apposto
+    
+    def copia_password(self, psw):
         clipboard = QApplication.clipboard()
-        clipboard.setText(self.label.text())
+        password = self.label.text().replace("Password: ", "")
+        clipboard.setText(password)
         self.bottone_copia.setText("Copiato!")
         #copiata malamente da internet perché non sapevo come fare per fargli aspettare un secondo (con arduino è molto più facile)
         QTimer.singleShot(1000, lambda: self.bottone_copia.setText("Copia"))
@@ -112,7 +136,3 @@ app = QApplication(sys.argv)
 finestra = Finestra()
 finestra.show()
 sys.exit(app.exec_())
-
-
-
-
