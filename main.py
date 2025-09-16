@@ -29,7 +29,7 @@ class Finestra(QWidget):
         layout.addWidget(self.label1)
         
 
-        # Slider (da 7 a 32)
+        # Slider lunghezza password(da 7 a 32)
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setMinimum(7)
         self.slider.setMaximum(32)
@@ -37,20 +37,20 @@ class Finestra(QWidget):
         self.slider.valueChanged.connect(self.aggiorna_testo)
         layout.addWidget(self.slider)
 
-        # Checkbox 1
+        # Checkbox maiuscole (1)
         self.check_maiuscole = QCheckBox("Maiuscole (A-Z)")
         self.check_maiuscole.setChecked(False)  # attiva di default
         self.check_maiuscole.stateChanged.connect(self.aggiorna_testo)
         layout.addWidget(self.check_maiuscole)
 
-        # Checkbox 2
+        # Checkbox numeri (2)
         self.check_numeri = QCheckBox("Numeri (0-9)")
         self.check_numeri.setChecked(False)
         self.check_numeri.stateChanged.connect(self.aggiorna_testo)
         layout.addWidget(self.check_numeri)
 
 
-         # Checkbox 3
+         # Checkbox caratteri speciali (3)
         self.check_carspec = QCheckBox("Caratteri speciali (!, @, #, ...)")
         self.check_carspec.setChecked(False)
         self.check_carspec.stateChanged.connect(self.aggiorna_testo)
@@ -58,6 +58,8 @@ class Finestra(QWidget):
         self.setLayout(layout)
 
     def aggiorna_testo(self):
+        # Genera una password casuale prima con solo lettere minuscole
+        # poi sostituisco alcuni caratteri con maiuscole, numeri e caratteri speciali in base alle checkbox selezionate
         lunghezza = self.slider.value()
         caratteri = list("abcdefghijklmnopqrstuvwxyz")
         speciali = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+"]
@@ -100,11 +102,15 @@ class Finestra(QWidget):
             return
         
         self.label.setText(f"Password: {psw}")
+        # Aggiorna la label con il valore dello slider
         self.label1.setText(f"Numero caratteri: {lunghezza}")
 
     def verifica(self, psw):
         apposto = True
-        #if any(c.islower() for c in psw):
+        #verifico che i caratteri selezionati siano presenti nella password, perché potrebbe succedere che per esempio i caratteri speciali sovrascrivano le maiuscole
+
+        #altrimenti se seleziono maiuscole ma non ce ne sono, rigenero la password
+        
 
             
         if self.check_maiuscole.isChecked() == True:
@@ -123,9 +129,12 @@ class Finestra(QWidget):
     
     def copia_password(self, psw):
         clipboard = QApplication.clipboard()
+
+        # Rimuovi "Password: " dalla stringa prima di copiarla
         password = self.label.text().replace("Password: ", "")
         clipboard.setText(password)
         self.bottone_copia.setText("Copiato!")
+
         #copiata malamente da internet perché non sapevo come fare per fargli aspettare un secondo (con arduino è molto più facile)
         QTimer.singleShot(1000, lambda: self.bottone_copia.setText("Copia"))
        
