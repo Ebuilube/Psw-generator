@@ -7,7 +7,7 @@ class Finestra(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Generatore Password")
-        self.resize(400, 300)
+        self.resize(400, 220)
 
         # Layout verticale
         layout = QVBoxLayout()
