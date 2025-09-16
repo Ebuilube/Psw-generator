@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QTimer
 class Finestra(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Esempio PyQt5")
+        self.setWindowTitle("Generatore Password")
         self.resize(400, 300)
 
         # Layout verticale
